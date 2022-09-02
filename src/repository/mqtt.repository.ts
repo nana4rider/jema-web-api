@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import mqtt, { IClientOptions, MqttClient } from 'mqtt';
+import mqtt, { IClientOptions, MqttClient, QoS } from 'mqtt';
 import { Device } from '../entity/device.entity';
 
 const activeMessage = 'ACTIVE';
@@ -14,7 +14,7 @@ export class MqttRepository {
 
   private readonly baseTopic: string;
 
-  private readonly qos: number;
+  private readonly qos: QoS;
 
   constructor(configService: ConfigService) {
     const config = configService.get<IClientOptions>('mqtt.broker');
@@ -25,7 +25,7 @@ export class MqttRepository {
     this.client.on('error', (err) => {
       this.logger.error('MQTT Error', err);
     });
-    this.qos = configService.get<number>('mqtt.qos') ?? 1;
+    this.qos = configService.get<QoS>('mqtt.qos') ?? 1;
     this.baseTopic =
       configService.get<string>('mqtt.baseTopic') ?? 'jema-web-api';
   }
@@ -35,14 +35,19 @@ export class MqttRepository {
     const message = active ? activeMessage : inactiveMessage;
 
     return new Promise<void>((resolve, reject) => {
-      this.client.publish(topic, message, { retain: true, qos: 1 }, (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+      this.client.publish(
+        topic,
+        message,
+        { retain: true, qos: this.qos },
+        (err) => {
+          if (err) {
+            reject(err);
+            return;
+          }
 
-        resolve();
-      });
+          resolve();
+        },
+      );
     });
   }
 
@@ -53,7 +58,7 @@ export class MqttRepository {
     const topic = `${this.baseTopic}/${device.deviceId}/set`;
 
     return new Promise<void>((resolve, reject) => {
-      this.client.subscribe(topic, (err) => {
+      this.client.subscribe(topic, { qos: this.qos }, (err) => {
         if (err) {
           reject(err);
           return;
