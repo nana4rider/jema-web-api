@@ -13,4 +13,5 @@ mqtt:
     username:
     password:
 
+  qos: 1
   baseTopic: jema-web-api

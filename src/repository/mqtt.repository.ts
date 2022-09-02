@@ -14,6 +14,8 @@ export class MqttRepository {
 
   private readonly baseTopic: string;
 
+  private readonly qos: number;
+
   constructor(configService: ConfigService) {
     const config = configService.get<IClientOptions>('mqtt.broker');
     this.client = mqtt.connect(config);
@@ -23,7 +25,9 @@ export class MqttRepository {
     this.client.on('error', (err) => {
       this.logger.error('MQTT Error', err);
     });
-    this.baseTopic = configService.get<string>('mqtt.baseTopic');
+    this.qos = configService.get<number>('mqtt.qos') ?? 1;
+    this.baseTopic =
+      configService.get<string>('mqtt.baseTopic') ?? 'jema-web-api';
   }
 
   async publishState(device: Device, active: boolean): Promise<void> {
@@ -31,7 +35,7 @@ export class MqttRepository {
     const message = active ? activeMessage : inactiveMessage;
 
     return new Promise<void>((resolve, reject) => {
-      this.client.publish(topic, message, (err) => {
+      this.client.publish(topic, message, { retain: true, qos: 1 }, (err) => {
         if (err) {
           reject(err);
           return;
