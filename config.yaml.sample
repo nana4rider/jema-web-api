@@ -1,0 +1,16 @@
+devices:
+  - deviceId: entrance
+    deviceName: 玄関ドア
+    gpio:
+      - monitor: 21
+        control: 20
+
+mqtt:
+  broker:
+    protocol: mqtt
+    port: 1883
+    host: localhost
+    username:
+    password:
+
+  baseTopic: jema-web-api

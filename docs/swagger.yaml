@@ -1,0 +1,120 @@
+openapi: 3.0.0
+paths:
+  /devices:
+    get:
+      operationId: DeviceController_index
+      summary: デバイスの一覧を取得
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+      tags: &ref_0
+        - device
+  /devices/{deviceId}:
+    get:
+      operationId: DeviceController_findOne
+      summary: デバイスの詳細を取得
+      parameters:
+        - name: deviceId
+          required: true
+          in: path
+          description: Device ID
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+      tags: *ref_0
+  /devices/{deviceId}/state:
+    get:
+      operationId: DeviceStateController_getState
+      summary: 状態を取得
+      parameters:
+        - name: deviceId
+          required: true
+          in: path
+          description: Device ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceStateDto'
+      tags: &ref_1
+        - state
+    put:
+      operationId: DeviceStateController_updateState
+      summary: 状態を更新
+      parameters:
+        - name: deviceId
+          required: true
+          in: path
+          description: Device ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceStateDto'
+      responses:
+        '204':
+          description: ''
+      tags: *ref_1
+info:
+  title: JEM-A(JEM1427) API
+  description: JEM-A(JEM1427) API
+  version: '1.0'
+  contact: {}
+  license:
+    name: ISC
+    url: https://licenses.opensource.jp/ISC/ISC.html
+tags: []
+servers:
+  - url: http://localhost:3001/v1
+components:
+  schemas:
+    Gpio:
+      type: object
+      properties:
+        monitor:
+          type: number
+        control:
+          type: number
+      required:
+        - monitor
+        - control
+    Device:
+      type: object
+      properties:
+        deviceId:
+          type: string
+        deviceName:
+          type: string
+        gpio:
+          $ref: '#/components/schemas/Gpio'
+      required:
+        - deviceId
+        - deviceName
+        - gpio
+    DeviceStateDto:
+      type: object
+      properties:
+        active:
+          type: boolean
+      required:
+        - active
