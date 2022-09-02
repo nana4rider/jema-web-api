@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import mqtt, { IClientOptions, MqttClient } from 'mqtt';
 import { Device } from '../entity/device.entity';
@@ -8,6 +8,8 @@ const inactiveMessage = 'INACTIVE';
 
 @Injectable()
 export class MqttRepository {
+  private readonly logger = new Logger(MqttRepository.name);
+
   private readonly client: MqttClient;
 
   private readonly baseTopic: string;
@@ -15,6 +17,12 @@ export class MqttRepository {
   constructor(configService: ConfigService) {
     const config = configService.get<IClientOptions>('mqtt.broker');
     this.client = mqtt.connect(config);
+    this.client.once('connect', () => {
+      this.logger.log('MQTT Connected');
+    });
+    this.client.on('error', (err) => {
+      this.logger.error('MQTT Error', err);
+    });
     this.baseTopic = configService.get<string>('mqtt.baseTopic');
   }
 
