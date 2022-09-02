@@ -12,19 +12,19 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
+  const options = new DocumentBuilder()
+    .setTitle('JEM-A(JEM1427) API')
+    .setDescription('JEM-A(JEM1427) API')
+    .setVersion('1.0')
+    .setLicense('ISC', 'https://licenses.opensource.jp/ISC/ISC.html')
+    .addServer(`http://raspberrypi2.local:3000/${basePath}`)
+    .build();
+
+  const document = SwaggerModule.createDocument(app, options);
+
+  SwaggerModule.setup('/docs', app, document);
+
   if (process.env.NODE_ENV === 'development') {
-    const options = new DocumentBuilder()
-      .setTitle('JEM-A(JEM1427) API')
-      .setDescription('JEM-A(JEM1427) API')
-      .setVersion('1.0')
-      .setLicense('ISC', 'https://licenses.opensource.jp/ISC/ISC.html')
-      .addServer(`http://raspberrypi2.local:3000/${basePath}`)
-      .build();
-
-    const document = SwaggerModule.createDocument(app, options);
-
-    SwaggerModule.setup('/docs', app, document);
-
     fs.writeFileSync('./docs/swagger.yaml', dump(document, {}));
   }
 
