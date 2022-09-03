@@ -6,6 +6,13 @@ import { JemaRepository } from '../repository/jema.repository';
 export class JemaService {
   constructor(private readonly jemaRepository: JemaRepository) {}
 
+  addStateListener(
+    gpio: Gpio,
+    listener: (active: boolean) => void,
+  ): Promise<void> {
+    return this.jemaRepository.addStateListener(gpio, listener);
+  }
+
   getActive(gpio: Gpio): Promise<boolean> {
     return this.jemaRepository.getActive(gpio);
   }

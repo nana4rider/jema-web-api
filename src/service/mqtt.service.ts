@@ -1,19 +1,19 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Device } from '../entity/device.entity';
-import { DeviceRepository } from '../repository/device.repository';
-import { JemaRepository } from '../repository/jema.repository';
 import { MqttRepository } from '../repository/mqtt.repository';
+import { DeviceService } from './device.service';
+import { JemaService } from './jema.service';
 
 @Injectable()
 export class MqttService implements OnModuleInit {
   constructor(
-    private readonly deviceRepository: DeviceRepository,
+    private readonly deviceService: DeviceService,
+    private readonly jemaService: JemaService,
     private readonly mqttRepository: MqttRepository,
-    private readonly jemaRepository: JemaRepository,
   ) {}
 
   async onModuleInit(): Promise<void> {
-    const devices = await this.deviceRepository.find();
+    const devices = await this.deviceService.find();
 
     const tasks = [];
     for (const device of devices) {
@@ -28,12 +28,12 @@ export class MqttService implements OnModuleInit {
 
   registerMqtt2jema(device: Device): Promise<void> {
     return this.mqttRepository.addCommandListener(device, (active) => {
-      void this.jemaRepository.setActive(device.gpio, active);
+      void this.jemaService.setActive(device.gpio, active);
     });
   }
 
   registerJema2mqtt(device: Device): Promise<void> {
-    return this.jemaRepository.addStateListener(device.gpio, (active) => {
+    return this.jemaService.addStateListener(device.gpio, (active) => {
       void this.mqttRepository.publishState(device, active);
     });
   }

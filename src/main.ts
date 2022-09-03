@@ -17,6 +17,7 @@ async function bootstrap() {
     .setDescription('JEM-A(JEM1427) API')
     .setVersion('1.0')
     .setLicense('ISC', 'https://licenses.opensource.jp/ISC/ISC.html')
+    .addServer(`http://localhost:3003/${basePath}`)
     .addServer(`http://raspberrypi2.local:3000/${basePath}`)
     .build();
 
