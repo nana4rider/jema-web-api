@@ -37,4 +37,3 @@ lerna-debug.log*
 # Config file
 .env
 config.yaml
-pm2.config.js
