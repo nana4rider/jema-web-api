@@ -13,28 +13,22 @@ export class MqttService implements OnModuleInit {
   ) {}
 
   async onModuleInit(): Promise<void> {
+    this.mqttRepository.addCommandListener(async (deviceId, active) => {
+      const device = await this.deviceService.findOne(deviceId);
+
+      if (device) {
+        await this.jemaService.setActive(device.gpio, active);
+      }
+    });
+
     const devices = await this.deviceService.find();
 
-    const tasks = [];
-    for (const device of devices) {
-      tasks.push(
-        (async () => this.registerMqtt2jema(device))(),
-        (async () => this.registerJema2mqtt(device))(),
-      );
-    }
-
-    await Promise.all(tasks);
-  }
-
-  registerMqtt2jema(device: Device): Promise<void> {
-    return this.mqttRepository.addCommandListener(device, (active) => {
-      void this.jemaService.setActive(device.gpio, active);
-    });
+    await Promise.all(devices.map((device) => this.registerJema2mqtt(device)));
   }
 
   registerJema2mqtt(device: Device): Promise<void> {
     return this.jemaService.addStateListener(device.gpio, (active) => {
-      void this.mqttRepository.publishState(device, active);
+      void this.mqttRepository.publishState(device.deviceId, active);
     });
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "jema-web-api",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "",
   "author": "nana4rider",
   "private": false,
@@ -27,11 +27,11 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.0",
     "@types/js-yaml": "^4.0.5",
+    "async-mqtt": "^2.6.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "jem1427-gpio-ts": "github:nana4rider/jem1427-gpio-ts",
     "js-yaml": "^4.1.0",
-    "mqtt": "^4.3.7",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
