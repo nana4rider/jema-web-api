@@ -1,18 +1,18 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { Device } from '../entity/device.entity';
 import { MqttRepository } from '../repository/mqtt.repository';
 import { DeviceService } from './device.service';
 import { JemaService } from './jema.service';
 
 @Injectable()
-export class MqttService implements OnModuleInit {
+export class MqttService implements OnApplicationBootstrap {
   constructor(
     private readonly deviceService: DeviceService,
     private readonly jemaService: JemaService,
     private readonly mqttRepository: MqttRepository,
   ) {}
 
-  async onModuleInit(): Promise<void> {
+  async onApplicationBootstrap(): Promise<void> {
     this.mqttRepository.addCommandListener(async (deviceId, active) => {
       const device = await this.deviceService.findOne(deviceId);
 
