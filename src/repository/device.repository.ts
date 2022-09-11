@@ -19,7 +19,7 @@ export class DeviceRepository {
     return this.devices;
   }
 
-  async findOne(deviceId: string): Promise<Device | undefined> {
-    return this.devices.find((device) => device.deviceId === deviceId);
+  async findOne(deviceId: string): Promise<Device | null> {
+    return this.devices.find((device) => device.deviceId === deviceId) ?? null;
   }
 }
