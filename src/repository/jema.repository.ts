@@ -26,10 +26,10 @@ export class JemaRepository {
 
   async addStateListener(
     gpio: Gpio,
-    listener: (active: boolean) => void,
+    callback: (active: boolean) => void,
   ): Promise<void> {
     const module = await this.getModule(gpio);
-    module.on('change', listener);
+    module.on('change', callback);
   }
 
   async getActive(gpio: Gpio): Promise<boolean> {

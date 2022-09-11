@@ -38,7 +38,7 @@ export class MqttRepository implements OnModuleInit {
   }
 
   addCommandListener(
-    listener: (deviceId: string, active: boolean) => void,
+    callback: (deviceId: string, active: boolean) => void,
   ): void {
     this.client.on('message', (recvTopic, payload) => {
       const pattern = new RegExp(`${this.baseTopic}/(.+?)/set`);
@@ -50,10 +50,10 @@ export class MqttRepository implements OnModuleInit {
 
       switch (payload.toString()) {
         case activeMessage:
-          listener(deviceId, true);
+          callback(deviceId, true);
           return;
         case inactiveMessage:
-          listener(deviceId, false);
+          callback(deviceId, false);
           return;
         default:
         // Unsupported Message

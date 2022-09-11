@@ -8,9 +8,9 @@ export class JemaService {
 
   addStateListener(
     gpio: Gpio,
-    listener: (active: boolean) => void,
+    callback: (active: boolean) => void,
   ): Promise<void> {
-    return this.jemaRepository.addStateListener(gpio, listener);
+    return this.jemaRepository.addStateListener(gpio, callback);
   }
 
   getActive(gpio: Gpio): Promise<boolean> {
