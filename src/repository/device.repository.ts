@@ -8,17 +8,18 @@ export class DeviceRepository {
   private readonly devices: Device[];
 
   constructor(configService: ConfigService) {
-    this.devices = configService.get('devices');
-    if (!Array.isArray(this.devices) || this.devices.length === 0) {
+    const configDevices = configService.get('devices');
+    if (!Array.isArray(configDevices) || configDevices.length === 0) {
       throw new Error('Device not found.');
     }
+    this.devices = configDevices;
   }
 
   async find(): Promise<Device[]> {
     return this.devices;
   }
 
-  async findOne(deviceId: string): Promise<Device> {
+  async findOne(deviceId: string): Promise<Device | undefined> {
     return this.devices.find((device) => device.deviceId === deviceId);
   }
 }

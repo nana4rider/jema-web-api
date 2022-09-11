@@ -11,7 +11,7 @@ export class DeviceService {
     return this.deviceRepository.find();
   }
 
-  findOne(deviceId: string): Promise<Device> {
+  findOne(deviceId: string): Promise<Device | undefined> {
     return this.deviceRepository.findOne(deviceId);
   }
 }

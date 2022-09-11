@@ -11,11 +11,12 @@ export class JemaRepository {
   }
 
   private async getModule({ monitor, control }: Gpio): Promise<JEM1427Gpio> {
-    if (this.modules.has(monitor)) {
-      return this.modules.get(monitor);
+    let module = this.modules.get(monitor);
+    if (module) {
+      return module;
     }
 
-    const module = new JEM1427Gpio(monitor, control);
+    module = new JEM1427Gpio(monitor, control);
     await module.init();
 
     this.modules.set(monitor, module);
